@@ -98,12 +98,13 @@ func (m *main) buildFontList(nerdFonts []*Asset) {
 }
 
 func getFontsList() {
-	nerdFonts, err := Nerds()
+	fonts, err := Fonts()
 	if err != nil {
 		program.Send(errMsg(err))
 		return
 	}
-	program.Send(loadMsg(nerdFonts))
+
+	program.Send(loadMsg(fonts))
 }
 
 func downloadFontZip(location string) {
@@ -272,6 +273,6 @@ func Run(font string, system bool) {
 	program = tea.NewProgram(main)
 	if _, err := program.Run(); err != nil {
 		print("Error running program: %v", err)
-		os.Exit(1)
+		os.Exit(70)
 	}
 }

@@ -2280,6 +2280,152 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gergelyk",
+      "name": "Grzegorz Krasoń",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11185582?v=4",
+      "profile": "http://krason.dev/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rockyoung",
+      "name": "rockyoung",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1207971?v=4",
+      "profile": "https://github.com/rockyoung",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "shravanasati",
+      "name": "Shravan Asati",
+      "avatar_url": "https://avatars.githubusercontent.com/u/69118069?v=4",
+      "profile": "https://github.com/shravanasati",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "lzecca78",
+      "name": "Luca Zecca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3881844?v=4",
+      "profile": "https://github.com/lzecca78",
+      "contributions": [
+        "code",
+        "design",
+        "doc"
+      ]
+    },
+    {
+      "login": "jreilly-lukava",
+      "name": "Joshua Reilly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30353736?v=4",
+      "profile": "https://github.com/jreilly-lukava",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "ivan-the-terrible",
+      "name": "Ivan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56458442?v=4",
+      "profile": "https://ivan-the-terrible.github.io/",
+      "contributions": [
+        "design",
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "mountcount",
+      "name": "mountcount",
+      "avatar_url": "https://avatars.githubusercontent.com/u/166301065?v=4",
+      "profile": "https://github.com/mountcount",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Bondrake",
+      "name": "Bondrake",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11696?v=4",
+      "profile": "https://github.com/Bondrake",
+      "contributions": [
+        "design",
+        "code"
+      ]
+    },
+    {
+      "login": "R00dRallec",
+      "name": "R00dRallec",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9081954?v=4",
+      "profile": "https://github.com/R00dRallec",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "publicfacingusername",
+      "name": "Justin Wolfington",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13956145?v=4",
+      "profile": "https://github.com/publicfacingusername",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jtracey93",
+      "name": "Jack Tracey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41163455?v=4",
+      "profile": "https://bio.link/jacktracey",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "MarkDaveny",
+      "name": "MarkDaveny",
+      "avatar_url": "https://avatars.githubusercontent.com/u/168091250?v=4",
+      "profile": "https://github.com/MarkDaveny",
+      "contributions": [
+        "code",
+        "design",
+        "doc"
+      ]
+    },
+    {
+      "login": "tiwahu",
+      "name": "Timothy Huber",
+      "avatar_url": "https://avatars.githubusercontent.com/u/590564?v=4",
+      "profile": "http://www.tiwahu.com/",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "YashJM",
+      "name": "Yash Mistry",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63824041?v=4",
+      "profile": "http://yashjmistry.me",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "jlabonski",
+      "name": "Jeffrey Labonski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2981369?v=4",
+      "profile": "https://github.com/jlabonski",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

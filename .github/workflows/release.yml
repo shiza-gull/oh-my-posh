@@ -19,10 +19,10 @@ jobs:
       skipped: ${{ steps.changelog.outputs.skipped }}
     steps:
       - name: Checkout code 👋
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
       - name: Create changelog ✍️
         id: changelog
-        uses: TriPSs/conventional-changelog-action@f04dac1fd07687cec8ea302937ca588b33786e98
+        uses: TriPSs/conventional-changelog-action@3a392e9aa44a72686b0fc13259a90d287dd0877c
         with:
           github-token: ${{ secrets.github_token }}
           skip-version-file: "true"
@@ -41,7 +41,7 @@ jobs:
         working-directory: ${{ github.workspace }}/src
     steps:
       - name: Checkout code 👋
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
       - name: Install Go 🗳
         uses: ./.github/workflows/composite/bootstrap-go
       - name: Tag HEAD 😸
@@ -50,7 +50,7 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag ${{ needs.changelog.outputs.tag }}
       - name: Install cosign 🔑
-        uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4
+        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
         with:
           cosign-release: 'v1.4.0'
       - name: Private Key 🔐
@@ -60,7 +60,7 @@ jobs:
         env:
           COSIGN_KEY: ${{secrets.COSIGN_KEY}}
       - name: Run GoReleaser 🚀
-        uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8
+        uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
         with:
           distribution: goreleaser
           version: latest
@@ -85,7 +85,7 @@ jobs:
           }
         shell: pwsh
       - name: Release 🎓
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
+        uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87
         with:
           tag_name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.body }}

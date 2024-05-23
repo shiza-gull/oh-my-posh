@@ -36,7 +36,8 @@ on getting started, have a look at the docs at https://ohmyposh.dev`,
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		os.Exit(1)
+		// software error
+		os.Exit(70)
 	}
 }
 
@@ -46,7 +47,7 @@ var (
 	initialize bool
 )
 
-func init() { //nolint:gochecknoinits
+func init() {
 	RootCmd.PersistentFlags().StringVarP(&config, "config", "c", "", "config file path")
 	RootCmd.Flags().BoolVarP(&initialize, "init", "i", false, "init (deprecated)")
 	RootCmd.Flags().BoolVar(&displayVersion, "version", false, "version")

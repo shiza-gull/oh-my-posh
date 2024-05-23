@@ -38,19 +38,19 @@ const (
 
 // Block defines a part of the prompt with optional segments
 type Block struct {
-	Type      BlockType      `json:"type,omitempty"`
-	Alignment BlockAlignment `json:"alignment,omitempty"`
-	Segments  []*Segment     `json:"segments,omitempty"`
-	Newline   bool           `json:"newline,omitempty"`
-	Filler    string         `json:"filler,omitempty"`
-	Overflow  Overflow       `json:"overflow,omitempty"`
+	Type      BlockType      `json:"type,omitempty" toml:"type,omitempty"`
+	Alignment BlockAlignment `json:"alignment,omitempty" toml:"alignment,omitempty"`
+	Segments  []*Segment     `json:"segments,omitempty" toml:"segments,omitempty"`
+	Newline   bool           `json:"newline,omitempty" toml:"newline,omitempty"`
+	Filler    string         `json:"filler,omitempty" toml:"filler,omitempty"`
+	Overflow  Overflow       `json:"overflow,omitempty" toml:"overflow,omitempty"`
 
 	// Deprecated: keep the logic for legacy purposes
-	HorizontalOffset int `json:"horizontal_offset,omitempty"`
-	VerticalOffset   int `json:"vertical_offset,omitempty"`
+	HorizontalOffset int `json:"horizontal_offset,omitempty" toml:"horizontal_offset,omitempty"`
+	VerticalOffset   int `json:"vertical_offset,omitempty" toml:"vertical_offset,omitempty"`
 
-	MaxWidth int `json:"max_width,omitempty"`
-	MinWidth int `json:"min_width,omitempty"`
+	MaxWidth int `json:"max_width,omitempty" toml:"max_width,omitempty"`
+	MinWidth int `json:"min_width,omitempty" toml:"min_width,omitempty"`
 
 	env                   platform.Environment
 	writer                *ansi.Writer
@@ -176,38 +176,70 @@ func (b *Block) writeSeparator(final bool) {
 	if isPreviousDiamond {
 		b.adjustTrailingDiamondColorOverrides()
 	}
+
 	if isPreviousDiamond && isCurrentDiamond && len(b.activeSegment.LeadingDiamond) == 0 {
 		b.writer.Write(ansi.Background, ansi.ParentBackground, b.previousActiveSegment.TrailingDiamond)
 		return
 	}
+
 	if isPreviousDiamond && len(b.previousActiveSegment.TrailingDiamond) > 0 {
 		b.writer.Write(ansi.Transparent, ansi.ParentBackground, b.previousActiveSegment.TrailingDiamond)
 	}
 
-	resolvePowerlineSymbol := func() string {
-		var symbol string
-		if b.activeSegment.isPowerline() {
-			symbol = b.activeSegment.PowerlineSymbol
-		} else if b.previousActiveSegment != nil && b.previousActiveSegment.isPowerline() {
-			symbol = b.previousActiveSegment.PowerlineSymbol
+	isPowerline := b.activeSegment.isPowerline()
+
+	shouldOverridePowerlineLeadingSymbol := func() bool {
+		if !isPowerline {
+			return false
 		}
-		return symbol
+
+		if isPowerline && len(b.activeSegment.LeadingPowerlineSymbol) == 0 {
+			return false
+		}
+
+		if b.previousActiveSegment != nil && b.previousActiveSegment.isPowerline() {
+			return false
+		}
+
+		return true
 	}
+
+	if shouldOverridePowerlineLeadingSymbol() {
+		b.writer.Write(ansi.Transparent, ansi.Background, b.activeSegment.LeadingPowerlineSymbol)
+		return
+	}
+
+	resolvePowerlineSymbol := func() string {
+		if isPowerline {
+			return b.activeSegment.PowerlineSymbol
+		}
+
+		if b.previousActiveSegment != nil && b.previousActiveSegment.isPowerline() {
+			return b.previousActiveSegment.PowerlineSymbol
+		}
+
+		return ""
+	}
+
 	symbol := resolvePowerlineSymbol()
 	if len(symbol) == 0 {
 		return
 	}
+
 	bgColor := ansi.Background
-	if final || !b.activeSegment.isPowerline() {
+	if final || !isPowerline {
 		bgColor = ansi.Transparent
 	}
+
 	if b.activeSegment.style() == Diamond && len(b.activeSegment.LeadingDiamond) == 0 {
 		bgColor = ansi.Background
 	}
+
 	if b.activeSegment.InvertPowerline {
 		b.writer.Write(b.getPowerlineColor(), bgColor, symbol)
 		return
 	}
+
 	b.writer.Write(bgColor, b.getPowerlineColor(), symbol)
 }
 

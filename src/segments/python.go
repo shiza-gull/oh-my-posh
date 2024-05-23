@@ -21,6 +21,7 @@ const (
 	// FetchVirtualEnv fetches the virtual env
 	FetchVirtualEnv      properties.Property = "fetch_virtual_env"
 	UsePythonVersionFile properties.Property = "use_python_version_file"
+	FolderNameFallback   properties.Property = "folder_name_fallback"
 )
 
 func (p *Python) Template() string {
@@ -50,6 +51,11 @@ func (p *Python) Init(props properties.Properties, env platform.Environment) {
 				args:       []string{"--version"},
 				regex:      `(?:Python (?P<version>((?P<major>[0-9]+).(?P<minor>[0-9]+).(?P<patch>[0-9]+))))`,
 			},
+			{
+				executable: "py",
+				args:       []string{"--version"},
+				regex:      `(?:Python (?P<version>((?P<major>[0-9]+).(?P<minor>[0-9]+).(?P<patch>[0-9]+))))`,
+			},
 		},
 		versionURLTemplate: "https://docs.python.org/release/{{ .Major }}.{{ .Minor }}.{{ .Patch }}/whatsnew/changelog.html#python-{{ .Major }}-{{ .Minor }}-{{ .Patch }}",
 		displayMode:        props.GetString(DisplayMode, DisplayModeEnvironment),
@@ -74,6 +80,7 @@ func (p *Python) loadContext() {
 		"CONDA_DEFAULT_ENV",
 	}
 
+	folderNameFallback := p.language.props.GetBool(FolderNameFallback, true)
 	defaultVenvNames := []string{
 		".venv",
 		"venv",
@@ -87,8 +94,7 @@ func (p *Python) loadContext() {
 		}
 
 		name := platform.Base(p.language.env, venv)
-
-		if slices.Contains(defaultVenvNames, name) {
+		if folderNameFallback && slices.Contains(defaultVenvNames, name) {
 			venv = strings.TrimSuffix(venv, name)
 			name = platform.Base(p.language.env, venv)
 		}
