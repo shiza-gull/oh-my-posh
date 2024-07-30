@@ -57,7 +57,7 @@ type Segment struct {
 	Background             color.Ansi     `json:"background" toml:"background"`
 	Foreground             color.Ansi     `json:"foreground" toml:"foreground"`
 	Newline                bool           `json:"newline,omitempty" toml:"newline,omitempty"`
-	CacheDuration          int            `json:"cache_duration,omitempty" toml:"cache_duration,omitempty"`
+	CacheDuration          cache.Duration `json:"cache_duration,omitempty" toml:"cache_duration,omitempty"`
 
 	Enabled bool `json:"-" toml:"-"`
 
@@ -153,7 +153,7 @@ func (segment *Segment) isToggled() bool {
 }
 
 func (segment *Segment) restoreCache() bool {
-	if segment.CacheDuration <= 0 {
+	if segment.CacheDuration.IsEmpty() {
 		return false
 	}
 
@@ -182,7 +182,7 @@ func (segment *Segment) restoreCache() bool {
 }
 
 func (segment *Segment) setCache() {
-	if segment.CacheDuration <= 0 {
+	if segment.CacheDuration.IsEmpty() {
 		return
 	}
 
