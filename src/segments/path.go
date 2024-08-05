@@ -14,22 +14,20 @@ import (
 )
 
 type Path struct {
-	props properties.Properties
-	env   runtime.Environment
-
+	props         properties.Properties
+	env           runtime.Environment
 	root          string
 	relative      string
 	pwd           string
-	cygPath       bool
-	windowsPath   bool
+	Location      string
 	pathSeparator string
-
-	Path       string
-	StackCount int
-	Location   string
-	Writable   bool
-	RootDir    bool
-	Folders    Folders
+	Path          string
+	Folders       Folders
+	StackCount    int
+	windowsPath   bool
+	Writable      bool
+	RootDir       bool
+	cygPath       bool
 }
 
 const (
@@ -772,8 +770,8 @@ func (pt *Path) colorizePath(root string, elements []string) string {
 
 type Folder struct {
 	Name    string
-	Display bool
 	Path    string
+	Display bool
 }
 
 type Folders []*Folder

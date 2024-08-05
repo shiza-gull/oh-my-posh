@@ -18,10 +18,10 @@ func TestGetPalette(t *testing.T) {
 		"blue": "#0000ff",
 	}
 	cases := []struct {
-		Case            string
 		Palettes        *color.Palettes
 		Palette         color.Palette
 		ExpectedPalette color.Palette
+		Case            string
 	}{
 		{
 			Case: "match",
