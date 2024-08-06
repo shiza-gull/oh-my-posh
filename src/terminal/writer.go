@@ -400,7 +400,6 @@ func write(s rune) {
 		}
 	}
 
-	// length += utf8.RuneCountInString(string(s))
 	length += runewidth.RuneWidth(s)
 	lastRune = s
 	builder.WriteRune(s)
