@@ -226,7 +226,6 @@ func (pt *Path) getMaxWidth() int {
 	tmpl := &template.Text{
 		Template: width,
 		Context:  pt,
-		Env:      pt.env,
 	}
 
 	text, err := tmpl.Render()
@@ -258,7 +257,6 @@ func (pt *Path) getFolderSeparator() string {
 	tmpl := &template.Text{
 		Template: separatorTemplate,
 		Context:  pt,
-		Env:      pt.env,
 	}
 
 	text, err := tmpl.Render()
@@ -526,7 +524,6 @@ func (pt *Path) replaceMappedLocations() (string, string) {
 		tmpl := &template.Text{
 			Template: key,
 			Context:  pt,
-			Env:      pt.env,
 		}
 
 		path, err := tmpl.Render()

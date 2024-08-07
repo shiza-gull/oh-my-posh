@@ -61,7 +61,6 @@ func (cfg *Config) getPalette() color.Palette {
 	}
 	tmpl := &template.Text{
 		Template: cfg.Palettes.Template,
-		Env:      cfg.env,
 	}
 	if palette, err := tmpl.Render(); err == nil {
 		if p, ok := cfg.Palettes.List[palette]; ok {

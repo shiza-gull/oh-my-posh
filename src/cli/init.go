@@ -7,6 +7,7 @@ import (
 	"github.com/jandedobbeleer/oh-my-posh/src/config"
 	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
 	"github.com/jandedobbeleer/oh-my-posh/src/shell"
+	"github.com/jandedobbeleer/oh-my-posh/src/template"
 	"github.com/spf13/cobra"
 )
 
@@ -60,6 +61,8 @@ See the documentation to initialize your shell: https://ohmyposh.dev/docs/instal
 
 			env.Init()
 			defer env.Close()
+
+			template.Init(env)
 
 			cfg := config.Load(env)
 

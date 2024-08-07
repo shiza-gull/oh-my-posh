@@ -86,7 +86,6 @@ func (e *Engine) pwd() {
 	// Allow template logic to define when to enable the PWD (when supported)
 	tmpl := &template.Text{
 		Template: e.Config.PWD,
-		Env:      e.Env,
 	}
 
 	pwdType, err := tmpl.Render()
@@ -154,7 +153,6 @@ func (e *Engine) shouldFill(filler string, padLength int) (string, bool) {
 func (e *Engine) getTitleTemplateText() string {
 	tmpl := &template.Text{
 		Template: e.Config.ConsoleTitleTemplate,
-		Env:      e.Env,
 	}
 	if text, err := tmpl.Render(); err == nil {
 		return text
@@ -504,6 +502,8 @@ func New(flags *runtime.Flags) *Engine {
 	env.Init()
 	cfg := config.Load(env)
 
+	template.Init(env)
+
 	if cfg.PatchPwshBleed {
 		patchPowerShellBleed(env.Shell(), flags)
 	}
@@ -512,7 +512,7 @@ func New(flags *runtime.Flags) *Engine {
 	flags.HasTransient = cfg.TransientPrompt != nil
 
 	terminal.Init(env.Shell())
-	terminal.BackgroundColor = cfg.TerminalBackground.ResolveTemplate(env)
+	terminal.BackgroundColor = cfg.TerminalBackground.ResolveTemplate()
 	terminal.Colors = cfg.MakeColors()
 	terminal.Plain = flags.Plain
 
