@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/mock"
-	"github.com/jandedobbeleer/oh-my-posh/src/platform"
 	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime/mock"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -132,25 +132,30 @@ func TestKubectlSegment(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		env := new(mock.MockedEnvironment)
+		env := new(mock.Environment)
 		env.On("HasCommand", "kubectl").Return(tc.KubectlExists)
+
 		var kubeconfig string
 		content, err := os.ReadFile("../test/kubectl.yml")
 		if err == nil {
 			kubeconfig = fmt.Sprintf(string(content), tc.Cluster, tc.UserName, tc.Namespace, tc.Context)
 		}
+
 		var kubectlErr error
 		if tc.KubectlErr {
-			kubectlErr = &platform.CommandError{
+			kubectlErr = &runtime.CommandError{
 				Err:      "oops",
 				ExitCode: 1,
 			}
 		}
+
 		env.On("RunCommand", "kubectl", []string{"config", "view", "--output", "yaml", "--minify"}).Return(kubeconfig, kubectlErr)
 		env.On("Getenv", "KUBECONFIG").Return(tc.Kubeconfig)
+
 		for path, content := range tc.Files {
 			env.On("FileContent", path).Return(content)
 		}
+
 		env.On("Home").Return("testhome")
 
 		k := &Kubectl{
@@ -159,8 +164,10 @@ func TestKubectlSegment(t *testing.T) {
 				properties.DisplayError: tc.DisplayError,
 				ParseKubeConfig:         tc.ParseKubeConfig,
 				ContextAliases:          tc.ContextAliases,
+				properties.CacheTimeout: 0,
 			},
 		}
+
 		assert.Equal(t, tc.ExpectedEnabled, k.Enabled(), tc.Case)
 		if tc.ExpectedEnabled {
 			assert.Equal(t, tc.ExpectedString, renderTemplate(env, tc.Template, k), tc.Case)

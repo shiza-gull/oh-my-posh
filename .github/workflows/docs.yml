@@ -18,16 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           submodules: true
           persist-credentials: false
       - name: Install Go
-        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
         with:
           go-version: 1.21
           cache-dependency-path: src/go.sum
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
         with:
           node-version: 20.9.0
         # Create Kind cluster to have a Kubernetes context for cloud-native-azure theme
@@ -44,7 +44,7 @@ jobs:
       - name: Set default Kubernetes namespace
         run: |
           kubectl config set-context posh --namespace demo
-      - uses: azure/login@6b2456866fc08b011acb422a92a4aa20e2c4de32
+      - uses: azure/login@6c251865b4e6290e7b78be643ea2d005bc51f69a
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Build oh-my-posh 🔧

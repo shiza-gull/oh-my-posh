@@ -3,12 +3,13 @@ package segments
 import (
 	"testing"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/mock"
-	"github.com/jandedobbeleer/oh-my-posh/src/platform"
+	"github.com/jandedobbeleer/oh-my-posh/src/cache"
 	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime/mock"
 
 	"github.com/stretchr/testify/assert"
-	mock2 "github.com/stretchr/testify/mock"
+	testify_ "github.com/stretchr/testify/mock"
 )
 
 func TestStatusWriterEnabled(t *testing.T) {
@@ -24,13 +25,14 @@ func TestStatusWriterEnabled(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		env := new(mock.MockedEnvironment)
+		env := new(mock.Environment)
 		env.On("StatusCodes").Return(tc.Status, "")
-		env.On("TemplateCache").Return(&platform.TemplateCache{
+		env.On("TemplateCache").Return(&cache.Template{
 			Code: 133,
 		})
-		env.On("Error", mock2.Anything).Return(nil)
-		env.On("DebugF", mock2.Anything, mock2.Anything).Return(nil)
+		env.On("Error", testify_.Anything).Return(nil)
+		env.On("DebugF", testify_.Anything, testify_.Anything).Return(nil)
+		env.On("Flags").Return(&runtime.Flags{})
 
 		props := properties.Map{}
 		if len(tc.Template) > 0 {
@@ -91,18 +93,22 @@ func TestFormatStatus(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		env := new(mock.MockedEnvironment)
-		env.On("TemplateCache").Return(&platform.TemplateCache{
+		env := new(mock.Environment)
+		env.On("TemplateCache").Return(&cache.Template{
 			Code: 133,
 		})
-		env.On("Error", mock2.Anything).Return(nil)
-		env.On("DebugF", mock2.Anything, mock2.Anything).Return(nil)
+		env.On("Error", testify_.Anything).Return(nil)
+		env.On("DebugF", testify_.Anything, testify_.Anything).Return(nil)
+		env.On("Flags").Return(&runtime.Flags{})
+
 		props := properties.Map{
 			StatusTemplate:  tc.Template,
 			StatusSeparator: tc.Separator,
 		}
+
 		s := &Status{}
 		s.Init(props, env)
+
 		assert.Equal(t, tc.Expected, s.formatStatus(tc.Status, tc.PipeStatus), tc.Case)
 	}
 }

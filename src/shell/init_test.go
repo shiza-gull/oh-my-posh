@@ -4,35 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/mock"
-	"github.com/jandedobbeleer/oh-my-posh/src/platform"
-
 	"github.com/stretchr/testify/assert"
-	mock2 "github.com/stretchr/testify/mock"
 )
-
-func TestConsoleBackgroundColorTemplate(t *testing.T) {
-	cases := []struct {
-		Case     string
-		Expected string
-		Term     string
-	}{
-		{Case: "Inside vscode", Expected: "#123456", Term: "vscode"},
-		{Case: "Outside vscode", Expected: "", Term: "windowsterminal"},
-	}
-
-	for _, tc := range cases {
-		env := new(mock.MockedEnvironment)
-		env.On("DebugF", mock2.Anything, mock2.Anything).Return(nil)
-		env.On("TemplateCache").Return(&platform.TemplateCache{
-			Env: map[string]string{
-				"TERM_PROGRAM": tc.Term,
-			},
-		})
-		color := ConsoleBackgroundColor(env, "{{ if eq \"vscode\" .Env.TERM_PROGRAM }}#123456{{end}}")
-		assert.Equal(t, tc.Expected, color, tc.Case)
-	}
-}
 
 func TestQuotePwshStr(t *testing.T) {
 	tests := []struct {

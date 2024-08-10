@@ -3,11 +3,13 @@ package template
 import (
 	"testing"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/mock"
-	"github.com/jandedobbeleer/oh-my-posh/src/platform"
+	"github.com/jandedobbeleer/oh-my-posh/src/cache"
+	"github.com/jandedobbeleer/oh-my-posh/src/maps"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime/mock"
 
 	"github.com/stretchr/testify/assert"
-	mock2 "github.com/stretchr/testify/mock"
+	testify_ "github.com/stretchr/testify/mock"
 )
 
 func TestRenderTemplate(t *testing.T) {
@@ -155,23 +157,27 @@ func TestRenderTemplate(t *testing.T) {
 		},
 	}
 
-	env := &mock.MockedEnvironment{}
-	env.On("TemplateCache").Return(&platform.TemplateCache{
+	env := &mock.Environment{}
+	env.On("TemplateCache").Return(&cache.Template{
 		Env: make(map[string]string),
 	})
-	env.On("Error", mock2.Anything)
-	env.On("DebugF", mock2.Anything, mock2.Anything).Return(nil)
+	env.On("Error", testify_.Anything)
+	env.On("DebugF", testify_.Anything, testify_.Anything).Return(nil)
+	env.On("Flags").Return(&runtime.Flags{})
+
 	for _, tc := range cases {
 		tmpl := &Text{
 			Template: tc.Template,
 			Context:  tc.Context,
 			Env:      env,
 		}
+
 		text, err := tmpl.Render()
 		if tc.ShouldError {
 			assert.Error(t, err)
 			continue
 		}
+
 		assert.NoError(t, err)
 		assert.Equal(t, tc.Expected, text, tc.Case)
 	}
@@ -240,23 +246,27 @@ func TestRenderTemplateEnvVar(t *testing.T) {
 		},
 	}
 	for _, tc := range cases {
-		env := &mock.MockedEnvironment{}
-		env.On("TemplateCache").Return(&platform.TemplateCache{
+		env := &mock.Environment{}
+		env.On("TemplateCache").Return(&cache.Template{
 			Env: tc.Env,
 			OS:  "darwin",
 		})
-		env.On("Error", mock2.Anything)
-		env.On("DebugF", mock2.Anything, mock2.Anything).Return(nil)
+		env.On("Error", testify_.Anything)
+		env.On("DebugF", testify_.Anything, testify_.Anything).Return(nil)
+		env.On("Flags").Return(&runtime.Flags{})
+
 		tmpl := &Text{
 			Template: tc.Template,
 			Context:  tc.Context,
 			Env:      env,
 		}
+
 		text, err := tmpl.Render()
 		if tc.ShouldError {
 			assert.Error(t, err)
 			continue
 		}
+
 		assert.Equal(t, tc.Expected, text, tc.Case)
 	}
 }
@@ -329,7 +339,7 @@ func TestCleanTemplate(t *testing.T) {
 		},
 		{
 			Case:     "Replace a direct call to .Segments with .Segments.List",
-			Expected: `{{.Segments.SimpleMap.Git.Repo}}`,
+			Expected: `{{.Segments.ToSimple.Git.Repo}}`,
 			Template: `{{.Segments.Git.Repo}}`,
 		},
 	}
@@ -353,20 +363,23 @@ func TestSegmentContains(t *testing.T) {
 		{Case: "match", Expected: "world", Template: `{{ if .Segments.Contains "Path" }}hello{{ else }}world{{ end }}`},
 	}
 
-	env := &mock.MockedEnvironment{}
-	segments := platform.NewConcurrentMap()
+	env := &mock.Environment{}
+	segments := maps.NewConcurrent()
 	segments.Set("Git", "foo")
-	env.On("DebugF", mock2.Anything, mock2.Anything).Return(nil)
-	env.On("TemplateCache").Return(&platform.TemplateCache{
+	env.On("DebugF", testify_.Anything, testify_.Anything).Return(nil)
+	env.On("TemplateCache").Return(&cache.Template{
 		Env:      make(map[string]string),
 		Segments: segments,
 	})
+	env.On("Flags").Return(&runtime.Flags{})
+
 	for _, tc := range cases {
 		tmpl := &Text{
 			Template: tc.Template,
 			Context:  nil,
 			Env:      env,
 		}
+
 		text, _ := tmpl.Render()
 		assert.Equal(t, tc.Expected, text, tc.Case)
 	}

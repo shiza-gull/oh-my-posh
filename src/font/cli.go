@@ -10,9 +10,14 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/jandedobbeleer/oh-my-posh/src/terminal"
 )
 
-var program *tea.Program
+var (
+	program     *tea.Program
+	environment runtime.Environment
+)
 
 const listHeight = 14
 
@@ -113,6 +118,7 @@ func downloadFontZip(location string) {
 		program.Send(errMsg(err))
 		return
 	}
+
 	program.Send(zipMsg(zipFile))
 }
 
@@ -122,6 +128,7 @@ func installLocalFontZIP(zipFile string, user bool) {
 		program.Send(errMsg(err))
 		return
 	}
+
 	installFontZIP(data, user)
 }
 
@@ -131,6 +138,7 @@ func installFontZIP(zipFile []byte, user bool) {
 		program.Send(errMsg(err))
 		return
 	}
+
 	program.Send(successMsg(families))
 }
 
@@ -158,6 +166,7 @@ func (m *main) Init() tea.Cmd {
 		}
 		go getFontsList()
 	}()
+
 	s := spinner.New()
 	s.Spinner = spinner.Dot
 	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("170"))
@@ -166,6 +175,7 @@ func (m *main) Init() tea.Cmd {
 	if isLocalZipFile() {
 		m.state = unzipFont
 	}
+
 	return m.spinner.Tick
 }
 
@@ -231,6 +241,10 @@ func (m *main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 	}
 
+	if m.list == nil {
+		return m, nil
+	}
+
 	lst, cmd := m.list.Update(msg)
 	m.list = &lst
 	return m, cmd
@@ -240,36 +254,48 @@ func (m *main) View() string {
 	if m.err != nil {
 		return textStyle.Render(m.err.Error())
 	}
+
 	switch m.state {
 	case getFonts:
-		return textStyle.Render(fmt.Sprintf("%s Downloading font list", m.spinner.View()))
+		return textStyle.Render(fmt.Sprintf("%s Downloading font list%s", m.spinner.View(), terminal.StartProgress()))
 	case selectFont:
-		return "\n" + m.list.View()
+		return fmt.Sprintf("\n%s%s", m.list.View(), terminal.StopProgress())
 	case downloadFont:
-		return textStyle.Render(fmt.Sprintf("%s Downloading %s", m.spinner.View(), m.font))
+		return textStyle.Render(fmt.Sprintf("%s Downloading %s%s", m.spinner.View(), m.font, terminal.StartProgress()))
 	case unzipFont:
 		return textStyle.Render(fmt.Sprintf("%s Extracting %s", m.spinner.View(), m.font))
 	case installFont:
 		return textStyle.Render(fmt.Sprintf("%s Installing %s", m.spinner.View(), m.font))
 	case quit:
-		return textStyle.Render("No need to install a new font? That's cool.")
+		return textStyle.Render(fmt.Sprintf("No need to install a new font? That's cool.%s", terminal.StopProgress()))
 	case done:
 		var builder strings.Builder
-		builder.WriteString(fmt.Sprintf("Successfully installed %s 🚀\n\n", m.font))
+
+		builder.WriteString(fmt.Sprintf("Successfully installed %s 🚀\n\n%s", m.font, terminal.StopProgress()))
 		builder.WriteString("The following font families are now available for configuration:\n")
-		for _, family := range m.families {
-			builder.WriteString(fmt.Sprintf("  • %s\n", family))
+
+		for i, family := range m.families {
+			builder.WriteString(fmt.Sprintf("  • %s", family))
+
+			if i < len(m.families)-1 {
+				builder.WriteString("\n")
+			}
 		}
+
 		return textStyle.Render(builder.String())
 	}
+
 	return ""
 }
 
-func Run(font string, system bool) {
+func Run(font string, env runtime.Environment) {
 	main := &main{
 		font:   font,
-		system: system,
+		system: env.Root(),
 	}
+
+	environment = env
+
 	program = tea.NewProgram(main)
 	if _, err := program.Run(); err != nil {
 		print("Error running program: %v", err)

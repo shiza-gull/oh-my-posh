@@ -132,6 +132,14 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} <a href='https://github.com/sponsors/JanDeDobbeleer' target='_blank'>Jan De Dobbeleer</a> and <a href='/docs/contributors'>contributors</a>.`,
     },
+    announcementBar: {
+      id: 'support_us',
+      content:
+        'If you\'re enjoying Oh My Posh, consider becoming a <a target="_blank" rel="noopener noreferrer" href="https://github.com/sponsors/JanDeDobbeleer">sponsor</a> to keep the project going strong 💪',
+      backgroundColor: '#2c7ae0',
+      textColor: '#ffffff',
+      isCloseable: false,
+    },
     appInsights: {
       instrumentationKey: '51741aa7-e087-4e80-b7b0-0863d467462a',
     },

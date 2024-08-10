@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/engine"
-	"github.com/jandedobbeleer/oh-my-posh/src/platform"
+	"github.com/jandedobbeleer/oh-my-posh/src/prompt"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
 
 	"github.com/spf13/cobra"
 )
@@ -19,6 +19,8 @@ var (
 	terminalWidth int
 	eval          bool
 	cleared       bool
+	cached        bool
+	jobCount      int
 
 	command      string
 	shellVersion string
@@ -49,8 +51,8 @@ var printCmd = &cobra.Command{
 			return
 		}
 
-		flags := &platform.Flags{
-			Config:        config,
+		flags := &runtime.Flags{
+			Config:        configFlag,
 			PWD:           pwd,
 			PSWD:          pswd,
 			ErrorCode:     status,
@@ -64,30 +66,32 @@ var printCmd = &cobra.Command{
 			Plain:         plain,
 			Primary:       args[0] == "primary",
 			Cleared:       cleared,
+			Cached:        cached,
 			NoExitCode:    noStatus,
 			Column:        column,
+			JobCount:      jobCount,
 		}
 
-		eng := engine.New(flags)
+		eng := prompt.New(flags)
 		defer eng.Env.Close()
 
 		switch args[0] {
 		case "debug":
-			fmt.Print(eng.ExtraPrompt(engine.Debug))
+			fmt.Print(eng.ExtraPrompt(prompt.Debug))
 		case "primary":
 			fmt.Print(eng.Primary())
 		case "secondary":
-			fmt.Print(eng.ExtraPrompt(engine.Secondary))
+			fmt.Print(eng.ExtraPrompt(prompt.Secondary))
 		case "transient":
-			fmt.Print(eng.ExtraPrompt(engine.Transient))
+			fmt.Print(eng.ExtraPrompt(prompt.Transient))
 		case "right":
 			fmt.Print(eng.RPrompt())
 		case "tooltip":
 			fmt.Print(eng.Tooltip(command))
 		case "valid":
-			fmt.Print(eng.ExtraPrompt(engine.Valid))
+			fmt.Print(eng.ExtraPrompt(prompt.Valid))
 		case "error":
-			fmt.Print(eng.ExtraPrompt(engine.Error))
+			fmt.Print(eng.ExtraPrompt(prompt.Error))
 		default:
 			_ = cmd.Help()
 		}
@@ -110,8 +114,12 @@ func init() {
 	printCmd.Flags().BoolVar(&cleared, "cleared", false, "do we have a clear terminal or not")
 	printCmd.Flags().BoolVar(&eval, "eval", false, "output the prompt for eval")
 	printCmd.Flags().IntVar(&column, "column", 0, "the column position of the cursor")
-	// Deprecated flags
+	printCmd.Flags().IntVar(&jobCount, "job-count", 0, "number of background jobs")
+
+	// Deprecated flags, keep to not break CLI integration
 	printCmd.Flags().IntVarP(&status, "error", "e", 0, "last exit code")
 	printCmd.Flags().BoolVar(&noStatus, "no-exit-code", false, "no valid exit code (cancelled or no command yet)")
+	printCmd.Flags().BoolVar(&cached, "cached", false, "use a cached prompt")
+
 	RootCmd.AddCommand(printCmd)
 }

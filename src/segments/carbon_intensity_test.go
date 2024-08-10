@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/jandedobbeleer/oh-my-posh/src/mock"
+	cache_ "github.com/jandedobbeleer/oh-my-posh/src/cache/mock"
 	"github.com/jandedobbeleer/oh-my-posh/src/properties"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime"
+	"github.com/jandedobbeleer/oh-my-posh/src/runtime/mock"
 
 	"github.com/stretchr/testify/assert"
-	mock2 "github.com/stretchr/testify/mock"
+	testify_ "github.com/stretchr/testify/mock"
 )
 
 const (
@@ -201,7 +203,7 @@ func TestCarbonIntensitySegmentSingle(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		env := &mock.MockedEnvironment{}
+		env := &mock.Environment{}
 		var props = properties.Map{
 			properties.HTTPTimeout:  5000,
 			properties.CacheTimeout: 0,
@@ -226,7 +228,8 @@ func TestCarbonIntensitySegmentSingle(t *testing.T) {
 		}
 
 		env.On("HTTPRequest", CARBONINTENSITYURL).Return([]byte(jsonResponse), responseError)
-		env.On("Error", mock2.Anything)
+		env.On("Error", testify_.Anything)
+		env.On("Flags").Return(&runtime.Flags{})
 
 		d := &CarbonIntensity{
 			props: props,
@@ -250,13 +253,16 @@ func TestCarbonIntensitySegmentFromCache(t *testing.T) {
 	response := `{ "data": [ { "from": "2023-10-27T12:30Z", "to": "2023-10-27T13:00Z", "intensity": { "forecast": 199, "actual": 193, "index": "moderate" } } ] }`
 	expectedString := "CO₂ •193 ↗ 199"
 
-	env := &mock.MockedEnvironment{}
-	cache := &mock.MockedCache{}
+	env := &mock.Environment{}
+	cache := &cache_.Cache{}
 
 	d := &CarbonIntensity{
 		props: properties.Map{},
 		env:   env,
 	}
+
+	env.On("Flags").Return(&runtime.Flags{})
+
 	cache.On("Get", CARBONINTENSITYURL).Return(response, true)
 	cache.On("Set").Return()
 	env.On("Cache").Return(cache)
