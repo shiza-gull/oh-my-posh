@@ -2,7 +2,6 @@ package prompt
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/jandedobbeleer/oh-my-posh/src/color"
 	"github.com/jandedobbeleer/oh-my-posh/src/config"
@@ -101,21 +100,18 @@ func (e *Engine) ExtraPrompt(promptType ExtraPromptType) string {
 
 	switch e.Env.Shell() {
 	case shell.ZSH:
-		// escape double quotes contained in the prompt
 		if promptType == Transient {
-			prompt := fmt.Sprintf("PS1=\"%s\"", strings.ReplaceAll(str, "\"", "\"\""))
+			prompt := fmt.Sprintf("PS1=%s", shell.QuotePosixStr(str))
 			// empty RPROMPT
-			prompt += "\nRPROMPT=\"\""
+			prompt += "\nRPROMPT=''"
 			return prompt
 		}
 		return str
 	case shell.PWSH, shell.PWSH5:
-		// Return the string and empty our buffer
 		// clear the line afterwards to prevent text from being written on the same line
 		// see https://github.com/JanDeDobbeleer/oh-my-posh/issues/3628
 		return str + terminal.ClearAfter()
 	case shell.CMD, shell.BASH, shell.FISH, shell.NU, shell.GENERIC:
-		// Return the string and empty our buffer
 		return str
 	}
 
