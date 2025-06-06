@@ -1,6 +1,7 @@
 module github.com/jandedobbeleer/oh-my-posh/src
 
-go 1.22.3
+go 1.24
+
 toolchain go1.24.1
 
 require (
@@ -41,7 +42,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
-	golang.org/x/mod v0.24.0
+	golang.org/x/mod v0.25.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
