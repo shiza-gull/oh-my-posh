@@ -35,7 +35,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/goccy/go-json v0.10.5
 	github.com/goccy/go-yaml v1.11.3
-	github.com/gookit/goutil v0.6.18
+	github.com/gookit/goutil v0.7.0
 	github.com/hashicorp/hcl/v2 v2.23.0
 	github.com/mattn/go-runewidth v0.0.16
 	github.com/pelletier/go-toml/v2 v2.2.4
