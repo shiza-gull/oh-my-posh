@@ -13,7 +13,7 @@ require (
 	github.com/esimov/stackblur-go v1.1.1
 	github.com/fogleman/gg v1.3.0
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gookit/color v1.5.4
+	github.com/gookit/color v1.6.0
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
