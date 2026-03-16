@@ -97,7 +97,7 @@ jobs:
             $zipHash.Hash | Out-File -Encoding 'UTF8' "./dist/$($_.Name).sha256"
           }
       - name: Release 🎓
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe
         with:
           tag_name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.body }}
