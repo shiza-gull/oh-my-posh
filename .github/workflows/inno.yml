@@ -25,7 +25,7 @@ jobs:
         $version = $env:GITHUB_REF.TrimStart("refs/tags/v")
         ./build.ps1 -Architecture ${{ matrix.arch }}  -Version $version
     - name: Upload artifacts 🆙
-      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -51,7 +51,7 @@ jobs:
     needs: publish
     steps:
     - name: Notify Winget Build 🙋🏾‍♀️
-      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
         github-token: ${{ secrets.GH_PAT }}
         script: |
@@ -63,7 +63,7 @@ jobs:
             inputs: {"version": process.env.GITHUB_REF.replace('refs/tags/v', '')}
           })
     - name: Notify Windows Store Build 👋
-      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
         github-token: ${{ secrets.GH_PAT }}
         script: |
@@ -75,7 +75,7 @@ jobs:
             inputs: {"version": process.env.GITHUB_REF.replace('refs/tags/v', '')}
           })
     - name: Notify Scoop Build 🤙
-      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
       with:
         github-token: ${{ secrets.GH_PAT }}
         script: |
